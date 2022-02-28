@@ -1,0 +1,8 @@
+pandas
+requests
+bs4
+numpy
+IPython
+tqdm
+boto3
+dotenv
