@@ -46,8 +46,8 @@ def insider_trading():
     empty_purchases.to_csv("data/insiderPurchases/" + str(dt.date.today()) + ".csv", index=False)
     with tqdm(total = len(symbols)) as pbar:
         for i in range(len(symbols)):
-            print(lst)
             lst = [symbols[i]]
+            print(lst)
             cik = symbol_to_cik(lst)
             page = 0
             # https://www.sec.gov/cgi-bin/own-disp?action=getissuer&CIK=1046179&type=&dateb=&owner=include&start=0
@@ -93,7 +93,7 @@ def insider_trading():
                 purchase_summary_df = pd.DataFrame({
                     "Symbol": lst[0],
                     "# Purchases": len(purchases),
-                    "Total bought": int(purchases['Purch'].sum(skipna=True))
+                    "Total bought": int(purchases['Purch'].sum(skipna=True)),
                     "Avg per Transaction": round(int(purchases['Purch'].sum(skipna=True)) / len(purchases), 2)
                 })
                 purchases.to_csv("data/insiderPurchases/" + str(lst[0]) + "_purchases.csv", header=False, mode='a', index=False)
