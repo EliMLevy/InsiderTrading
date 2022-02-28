@@ -5,4 +5,4 @@ numpy
 IPython
 tqdm
 boto3
-dotenv
+python-dotenv
