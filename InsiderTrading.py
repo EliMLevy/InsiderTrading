@@ -130,17 +130,18 @@ def summarize_filings(ticker, df):
 
 
 #Pulls the Insider Trading Statistics
-def insider_trading():
+def insider_trading(start_from=0):
     ticker_csv = pd.read_csv(r'./ticker_and_edgar_cik.csv', delimiter=',')
     symbols = [i.upper() for i in ticker_csv.Ticker]
     
     end = str(dt.date.today() - dt.timedelta(days=30))
-    empty_output = pd.DataFrame(columns=["Symbol","Purchases","Sales","Buy/Sell Ratio","Total Bought","Total Sold","Avg Shares Bought","Avg Shares Sold"])
-    empty_output.to_csv("data/insiderTransactions/" + str(dt.date.today()) + ".csv", index=False)
-    
-    empty_purchases = pd.DataFrame(columns=["Symbol", "# Purchases", "Total bought", "Avg per Transaction"])
-    empty_purchases.to_csv("data/insiderPurchases/" + str(dt.date.today()) + ".csv", index=False)
-    for i in tqdm(range(len(symbols))[:10]):
+    if start_from == 0:
+        empty_output = pd.DataFrame(columns=["Symbol","Purchases","Sales","Buy/Sell Ratio","Total Bought","Total Sold","Avg Shares Bought","Avg Shares Sold"])
+        empty_output.to_csv("data/insiderTransactions/" + str(dt.date.today()) + ".csv", index=False)
+        
+        empty_purchases = pd.DataFrame(columns=["Symbol", "# Purchases", "Total bought", "Avg per Transaction"])
+        empty_purchases.to_csv("data/insiderPurchases/" + str(dt.date.today()) + ".csv", index=False)
+    for i in tqdm(range(len(symbols))[start_from:]):
         symbol_data = scrape_filings_for(symbols[i], end)
         summary_df = summarize_filings(symbols[i], symbol_data)
         if summary_df is not None:
