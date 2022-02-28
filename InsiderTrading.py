@@ -95,8 +95,8 @@ def insider_trading():
                     "# Purchases": len(purchases),
                     "Total bought": int(purchases['Purch'].sum(skipna=True)),
                     "Avg per Transaction": round(int(purchases['Purch'].sum(skipna=True)) / len(purchases), 2)
-                })
-                purchases.to_csv("data/insiderPurchases/" + str(lst[0]) + "_purchases.csv", header=False, mode='a', index=False)
+                }, index = [0])
+                purchase_summary_df.to_csv("data/insiderPurchases/" + str(dt.date.today()) + ".csv", header=False, mode='a', index=False)
             # df.to_csv("output/filings" + str(lst[0]) + "_filings.csv")
             purch = df['Acquistion or Disposition'] == 'A'
             sale = df['Acquistion or Disposition'] == 'D'
