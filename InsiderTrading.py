@@ -137,7 +137,7 @@ def summarize_filings(ticker, df):
 
 #Pulls the Insider Trading Statistics
 def insider_trading(start_from=0):
-    ticker_csv = pd.read_csv(r'./ticker_and_edgar_cik.csv', delimiter=',')
+    ticker_csv = pd.read_csv(base_dir + 'ticker_and_edgar_cik.csv', delimiter=',')
     symbols = [i.upper() for i in ticker_csv.Ticker]
     
     end = str(dt.date.today() - dt.timedelta(days=30))
