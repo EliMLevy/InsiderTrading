@@ -8,9 +8,15 @@ import datetime as dt
 
 from s3handler import (get_client, put_file)
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+base_dir = os.getenv("BASE_DIR")
+
 #Looks up Edgar CIK Number
 def symbol_to_cik(symbols):
-    ticker_cik = pd.read_csv(r'./ticker_and_edgar_cik.csv', delimiter=',')
+    ticker_cik = pd.read_csv(base_dir + 'ticker_and_edgar_cik.csv', delimiter=',')
     df = pd.DataFrame(ticker_cik)
     df.set_index('Ticker', inplace=True)
     new_symbols = [i.lower() for i in symbols]
@@ -18,7 +24,7 @@ def symbol_to_cik(symbols):
     return cik
 #Looks up Symbol from CIK Number:
 def cik_to_symbol(ciks):
-    ticker_cik = pd.read_csv(r'./ticker_and_edgar_cik.csv', delimiter=',')
+    ticker_cik = pd.read_csv(base_dir + 'ticker_and_edgar_cik.csv', delimiter=',')
     df = pd.DataFrame(ticker_cik)
     df.set_index('CIK', inplace=True)
     df = df[~df.index.duplicated(keep='first')]
@@ -92,7 +98,7 @@ def summarize_filings(ticker, df):
             "Total bought": int(purchases['Purch'].sum(skipna=True)),
             "Avg per Transaction": round(int(purchases['Purch'].sum(skipna=True)) / len(purchases), 2)
         }, index = [0])
-        purchase_summary_df.to_csv("data/insiderPurchases/" + str(dt.date.today()) + ".csv", header=False, mode='a', index=False)
+        purchase_summary_df.to_csv(base_dir + "data/insiderPurchases/" + str(dt.date.today()) + ".csv", header=False, mode='a', index=False)
     
     purch = df['Acquistion or Disposition'] == 'A'
     sale = df['Acquistion or Disposition'] == 'D'
@@ -137,18 +143,21 @@ def insider_trading(start_from=0):
     end = str(dt.date.today() - dt.timedelta(days=30))
     if start_from == 0:
         empty_output = pd.DataFrame(columns=["Symbol","Purchases","Sales","Buy/Sell Ratio","Total Bought","Total Sold","Avg Shares Bought","Avg Shares Sold"])
-        empty_output.to_csv("data/insiderTransactions/" + str(dt.date.today()) + ".csv", index=False)
+        empty_output.to_csv(base_dir + "data/insiderTransactions/" + str(dt.date.today()) + ".csv", index=False)
         
         empty_purchases = pd.DataFrame(columns=["Symbol", "# Purchases", "Total bought", "Avg per Transaction"])
-        empty_purchases.to_csv("data/insiderPurchases/" + str(dt.date.today()) + ".csv", index=False)
+        empty_purchases.to_csv(base_dir + "data/insiderPurchases/" + str(dt.date.today()) + ".csv", index=False)
     for i in tqdm(range(len(symbols))[start_from:]):
         symbol_data = scrape_filings_for(symbols[i], end)
         summary_df = summarize_filings(symbols[i], symbol_data)
         if summary_df is not None:
-            summary_df.to_csv("data/insiderTransactions/" + str(dt.date.today()) + ".csv", mode="a",header=False, index=False)
+            summary_df.to_csv(base_dir + "data/insiderTransactions/" + str(dt.date.today()) + ".csv", mode="a",header=False, index=False)
 
 
     
     s3client = get_client()
-    put_file(s3client, "mysecfilings", "data/insiderTransactions/" + str(dt.date.today()) + ".csv", "data/insiderTransactions/" + str(dt.date.today()) + ".csv")
-    put_file(s3client, "mysecfilings", "data/insiderPurchases/"    + str(dt.date.today()) + ".csv", "data/insiderPurchases/"    + str(dt.date.today()) + ".csv")
+    put_file(s3client, "mysecfilings", base_dir + "data/insiderTransactions/" + str(dt.date.today()) + ".csv", "data/insiderTransactions/" + str(dt.date.today()) + ".csv")
+    put_file(s3client, "mysecfilings", base_dir + "data/insiderTransactions/" + str(dt.date.today()) + ".csv", "data/insiderTransactions/" + str(dt.date.today() + dt.timedelta(days=1)) + ".csv")
+    
+    put_file(s3client, "mysecfilings", base_dir + "data/insiderPurchases/"    + str(dt.date.today()) + ".csv", "data/insiderPurchases/"    + str(dt.date.today()) + ".csv")
+    put_file(s3client, "mysecfilings", base_dir + "data/insiderPurchases/"    + str(dt.date.today()) + ".csv", "data/insiderPurchases/"    + str(dt.date.today() + dt.timedelta(days=1)) + ".csv")
