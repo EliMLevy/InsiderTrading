@@ -40,7 +40,7 @@ def to_soup(url):
 
 def scrape_filings_for(ticker, end):
     lst = [ticker]
-    print(lst)
+    # print(lst)
     cik = symbol_to_cik(lst)
     page = 0
     # https://www.sec.gov/cgi-bin/own-disp?action=getissuer&CIK=1046179&type=&dateb=&owner=include&start=0
@@ -155,9 +155,9 @@ def insider_trading(start_from=0):
 
 
     
-    s3client = get_client()
-    put_file(s3client, "mysecfilings", base_dir + "data/insiderTransactions/" + str(dt.date.today()) + ".csv", "data/insiderTransactions/" + str(dt.date.today()) + ".csv")
-    put_file(s3client, "mysecfilings", base_dir + "data/insiderTransactions/" + str(dt.date.today()) + ".csv", "data/insiderTransactions/" + str(dt.date.today() + dt.timedelta(days=1)) + ".csv")
+    # s3client = get_client()
+    # put_file(s3client, "mysecfilings", base_dir + "data/insiderTransactions/" + str(dt.date.today()) + ".csv", "data/insiderTransactions/" + str(dt.date.today()) + ".csv")
+    # put_file(s3client, "mysecfilings", base_dir + "data/insiderTransactions/" + str(dt.date.today()) + ".csv", "data/insiderTransactions/" + str(dt.date.today() + dt.timedelta(days=1)) + ".csv")
     
-    put_file(s3client, "mysecfilings", base_dir + "data/insiderPurchases/"    + str(dt.date.today()) + ".csv", "data/insiderPurchases/"    + str(dt.date.today()) + ".csv")
-    put_file(s3client, "mysecfilings", base_dir + "data/insiderPurchases/"    + str(dt.date.today()) + ".csv", "data/insiderPurchases/"    + str(dt.date.today() + dt.timedelta(days=1)) + ".csv")
+    # put_file(s3client, "mysecfilings", base_dir + "data/insiderPurchases/"    + str(dt.date.today()) + ".csv", "data/insiderPurchases/"    + str(dt.date.today()) + ".csv")
+    # put_file(s3client, "mysecfilings", base_dir + "data/insiderPurchases/"    + str(dt.date.today()) + ".csv", "data/insiderPurchases/"    + str(dt.date.today() + dt.timedelta(days=1)) + ".csv")
