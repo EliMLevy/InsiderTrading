@@ -7,7 +7,7 @@ import pandas as pd
 
 def main():
     # print("hello world")
-    # data = insider_trading()
+    data = insider_trading()
     client = get_client()
 
 

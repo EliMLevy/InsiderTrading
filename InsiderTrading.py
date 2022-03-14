@@ -54,10 +54,12 @@ def scrape_filings_for(ticker, end):
         try:
             t_chil = [i for i in transaction_report.children]
             t_cont = [i for i in t_chil if i != '\n']
+            # raise Exception
         except:
-            print(soup)
-            print(beg_url)
-            raise Exception
+            return pd.DataFrame()
+            # print(soup)
+            # print(beg_url)
+            # raise Exception
 
         headers = [ i for i in t_cont[0].get_text().split('\n') if i != '']
         data_rough = [i for lst in t_cont[1:] for i in lst.get_text().split('\n') if i != '' ]
